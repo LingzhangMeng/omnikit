@@ -1,0 +1,4 @@
+# omnikit — exports every user-facing symbol; internals (leading '.') stay private.
+# Packages are referenced explicitly (stats::, Matrix::, graphics::) so no wholesale imports
+# are needed (avoids the Matrix/graphics/utils `head/tail/image` import clashes).
+exportPattern("^[^.]")

@@ -1,0 +1,21 @@
+Package: omnikit
+Type: Package
+Title: Multi-Omics Toolkit for Cross-Species, Spatial and Integrative Kidney Analysis
+Version: 0.1.0
+Authors@R: person("Lingzhang", "Meng", email = "m.lingzhang@hotmail.com",
+    role = c("aut", "cre"))
+Author: Lingzhang Meng [aut, cre]
+Maintainer: Lingzhang Meng <m.lingzhang@hotmail.com>
+Description: Dependency-light, algorithm-first implementations of the analysis primitives used
+    across a Lupus-nephritis kidney programme: depth-robust gene-programme scoring and
+    cross-species conservation, QC and doublet auditing, spatial niche statistics, and cross-omics
+    integration. Core estimators (AUC/DeLong, UCell, Moran's I, Geary's C, NMF, CCA, MOFA-style
+    factor analysis) are implemented from their definitions; see README.md and docs/MATH.md.
+License: MIT + file LICENSE
+Encoding: UTF-8
+Depends: R (>= 4.1)
+Imports: stats, Matrix, graphics, grDevices
+Suggests: testthat, ggplot2
+URL: https://github.com/LingzhangMeng/omnikit
+BugReports: https://github.com/LingzhangMeng/omnikit/issues
+Config/roxygen2/version: 8.1.0

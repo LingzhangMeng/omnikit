@@ -1,0 +1,8 @@
+bibentry(
+  bibtype  = "Manual",
+  title    = "omnikit: Multi-Omics Toolkit for Cross-Species, Spatial and Integrative Kidney Analysis",
+  author   = person("Lingzhang", "Meng", email = "m.lingzhang@hotmail.com"),
+  year     = "2026",
+  note     = "R package version 0.1.0",
+  url      = "https://github.com/LingzhangMeng/omnikit"
+)
