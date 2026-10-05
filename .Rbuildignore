@@ -1,5 +1,6 @@
 ^\.github$
 ^\.gitignore$
 ^docs$
+^examples$
 ^.*\.Rproj$
 ^\.Rproj\.user$

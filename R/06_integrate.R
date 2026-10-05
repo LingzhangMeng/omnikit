@@ -37,7 +37,7 @@ omni_cca <- function(X, Y, k = NULL) {
   n1 <- nrow(X) - 1
   Sxx <- crossprod(X) / n1; Syy <- crossprod(Y) / n1; Sxy <- crossprod(X, Y) / n1
   ex <- eigen(Sxx, symmetric = TRUE); ey <- eigen(Syy, symmetric = TRUE)
-  Wh <- function(e) e$vectors %*% diag(1 / sqrt(pmax(e$values, 1e-12))) %*% t(e$vectors)
+  Wh <- function(e) { w <- 1 / sqrt(pmax(e$values, 1e-12)); e$vectors %*% (w * t(e$vectors)) }
   Wx <- Wh(ex); Wy <- Wh(ey)
   sv <- svd(Wx %*% Sxy %*% Wy)
   kk <- if (is.null(k)) length(sv$d) else min(k, length(sv$d))
@@ -86,14 +86,14 @@ omni_mofa_lite <- function(views, k = 5L, n_iter = 200L, tol = 1e-6, seed = 0L) 
   for (it in seq_len(n_iter)) {
     M <- diag(k)
     for (v in seq_len(V)) M <- M + tcrossprod(Lam[[v]]) / sig2[v]      # (k x p)(p x k) = k x k
-    Minv <- solve(M)
+    Minv <- solve(M + diag(k) * 1e-8)
     Ez <- matrix(0, n, k)
     for (v in seq_len(V)) Ez <- Ez + Xs[[v]] %*% t(Lam[[v]]) / sig2[v]
     Ez <- Ez %*% Minv
     Ezz <- n * Minv + crossprod(Ez)
     for (v in seq_len(V)) {
       Lam[[v]] <- solve(Ezz) %*% crossprod(Ez, Xs[[v]])             # (k x k)(k x p) = k x p
-      sig2[v] <- sum((Xs[[v]] - Ez %*% Lam[[v]])^2) / (n * ncol(Xs[[v]]))
+      sig2[v] <- max(1e-8, sum((Xs[[v]] - Ez %*% Lam[[v]])^2) / (n * ncol(Xs[[v]])))
     }
     ll[it] <- sum(vapply(seq_len(V), function(v)
       -n * ncol(Xs[[v]]) / 2 * log(sig2[v]) -

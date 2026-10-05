@@ -1,0 +1,5 @@
+"metric","value"
+"spearman_raw",-0.357
+"spearman_after_depth_control",-0.086
+"auc_myeloid_raw",1
+"auc_myeloid_stratified",1
