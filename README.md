@@ -1,7 +1,8 @@
 # omnikit
 
 **Algorithm-first toolkit for kidney-disease multi-omics** — depth-robust gene-programme scoring,
-cross-species conservation, spatial-niche statistics, and cross-omics integration.
+cross-species conservation, spatial-niche statistics, cross-omics integration, topological
+conservation and conformal prediction.
 
 ![R-CMD-check](https://github.com/LingzhangMeng/omnikit/actions/workflows/R-CMD-check.yml/badge.svg)
 ![License: MIT](https://img.shields.io/badge/license-MIT-blue)
@@ -131,7 +132,7 @@ library(omnikit)
 
 ## Tutorials
 
-Five **self-contained** tutorials (synthetic data, no external files). Run them from the package
+Seven **self-contained** tutorials (synthetic data, no external files). Run them from the package
 root; each prints results and writes a figure (`docs/figures/`) and tables (`docs/tutorial_outputs/`):
 
 ```bash
@@ -140,6 +141,8 @@ Rscript examples/tutorial_2_conservation.R
 Rscript examples/tutorial_3_qc_doublets.R
 Rscript examples/tutorial_4_spatial.R
 Rscript examples/tutorial_5_integration.R
+Rscript examples/tutorial_6_topo.R
+Rscript examples/tutorial_7_conformal.R
 ```
 
 ### Tutorial 1 — programme scoring, depth control, carriers (`tutorial_1_program_scoring.R`)
@@ -209,6 +212,35 @@ mf <- omni_mofa_lite(list(v1, v2, v3), k = 2)  # multi-view factors
 Output: **RV 0.67 / 0.23 / 0.53**, **CCA r = 0.80**, MOFA **variance explained 0.63 / 0.76 / 1.00**
 (`docs/tutorial_outputs/tutorial_5_*.csv`).
 
+### Tutorial 6 — topological conservation (`tutorial_6_topo.R`)
+
+0-dimensional persistent homology of two point clouds (a shared latent manifold) + the bottleneck
+distance between their H0 diagrams, with an unrelated-cloud null.
+
+```r
+dA <- omni_h0_diagram(A); dB <- omni_h0_diagram(B)   # H0 bars = single-linkage merge heights
+omni_bottleneck_h0(dA, dB); omni_persistent_entropy(dA)
+```
+
+![Tutorial 6](docs/figures/tutorial_6.jpeg)
+
+Output: H0 bars 199/199, **bottleneck(A,B) = 0.342** vs null mean **0.422**
+(`docs/tutorial_outputs/tutorial_6_topo.csv`).
+
+### Tutorial 7 — conformal prediction (`tutorial_7_conformal.R`)
+
+Split and Mondrian conformal prediction sets from any classifier's probabilities.
+
+```r
+q <- omni_conformal_quantile(omni_nonconformity(cal$p, cal$y), 0.10)
+sets <- omni_prediction_sets(te$p, q); omni_coverage(sets, te$y); omni_avg_set_size(sets)
+```
+
+![Tutorial 7](docs/figures/tutorial_7.jpeg)
+
+Output: split / Mondrian **coverage 0.896 / 0.909** at a 0.90 target
+(`docs/tutorial_outputs/tutorial_7_coverage.csv`).
+
 ---
 
 ## Modules
@@ -221,12 +253,14 @@ Output: **RV 0.67 / 0.23 / 0.53**, **CCA r = 0.80**, MOFA **variance explained 0
 | `qc` | `omni_qc_metrics`, `omni_mad_outlier`, `omni_gmm2`, `omni_doublet_scrublet`, `omni_mixing` |
 | `spatial` | `omni_knn_graph`, `omni_moran`, `omni_geary`, `omni_lisa`, `omni_nhood_enrichment`, `omni_ripley`, `omni_spatial_lr` |
 | `integrate` | `omni_joint_nmf`, `omni_cca`, `omni_rv`, `omni_procrustes`, `omni_mofa_lite`, `omni_program_gwas` |
+| `topo` | `omni_h0_diagram`, `omni_persistent_entropy`, `omni_bottleneck_h0` |
+| `conformal` | `omni_nonconformity`, `omni_conformal_quantile`, `omni_mondrian_quantiles`, `omni_prediction_sets`, `omni_coverage`, `omni_avg_set_size` |
 | `utils` | `omni_save` (PDF + JPEG, no gridlines), `omni_theme`, `omni_as_matrix`, `omni_rnames`, `omni_cnames` |
 
 ## Validation
 
 ```bash
-Rscript tests/test_smoke.R        # 27 checks
+Rscript tests/test_smoke.R        # 34 checks
 ```
 
 - Reproduces a published **760-gene** cross-species conserved programme with **Jaccard = 1.0**.
