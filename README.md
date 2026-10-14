@@ -249,3 +249,12 @@ MOFA — Argelaguet 2018; scDRS — Zhang 2022), listed in [`docs/MATH.md`](docs
 ## License
 
 MIT © 2026 Lingzhang Meng — see [`LICENSE.md`](LICENSE.md).
+
+---
+
+## Changelog
+
+- **v0.2.0 (2026-10-14)** — added `omni_h0_diagram`/`omni_bottleneck_h0`/`omni_persistent_entropy`
+  (topology) and `omni_nonconformity`/`omni_conformal_quantile`/`omni_mondrian_quantiles`/
+  `omni_prediction_sets`/`omni_coverage`/`omni_avg_set_size` (conformal). 34 smoke checks.
+- v0.1.0 — initial release.

@@ -72,4 +72,30 @@ ok("MOFA factors shape", all(dim(mf$factors) == c(n, 2)) && length(mf$var_explai
 pg <- omni_program_gwas(stats::rnorm(50, 1), stats::rnorm(200, 0))
 ok("program-GWAS z > 0", pg$z > 0)
 
+# ---- v0.2: topo (H0) ----
+P1 <- matrix(stats::rnorm(40 * 3), 40, 3)
+P2 <- P1 + matrix(stats::rnorm(40 * 3, 0, 0.01), 40, 3)
+d1 <- omni_h0_diagram(P1); d2 <- omni_h0_diagram(P2)
+ok("H0 bars == n-1", length(d1) == 39 && length(d2) == 39)
+ok("H0 deaths positive", all(d1 > 0))
+ok("bottleneck self == 0", omni_bottleneck_h0(d1, d1) == 0)
+ok("bottleneck near-identical small", omni_bottleneck_h0(d1, d2) < 0.1)
+ok("persistent entropy > 0", omni_persistent_entropy(d1) > 0)
+
+# ---- v0.2: conformal ----
+K <- 3; ncal <- 400; ntest <- 400
+ycal <- sample(seq_len(K), ncal, replace = TRUE)
+pcal <- matrix(stats::runif(ncal * K), ncal, K); pcal <- pcal / rowSums(pcal)
+pcal[cbind(seq_len(ncal), ycal)] <- pcal[cbind(seq_len(ncal), ycal)] + 0.6
+pcal <- pcal / rowSums(pcal)
+ytest <- sample(seq_len(K), ntest, replace = TRUE)
+ptest <- matrix(stats::runif(ntest * K), ntest, K); ptest <- ptest / rowSums(ptest)
+ptest[cbind(seq_len(ntest), ytest)] <- ptest[cbind(seq_len(ntest), ytest)] + 0.6
+ptest <- ptest / rowSums(ptest)
+q <- omni_conformal_quantile(omni_nonconformity(pcal, ycal), 0.1)
+ok("conformal coverage >= 1-alpha", omni_coverage(omni_prediction_sets(ptest, q), ytest) >= 0.88)
+qm <- omni_mondrian_quantiles(pcal, ycal, 0.1)
+ok("mondrian coverage >= 1-alpha", omni_coverage(omni_prediction_sets(ptest, qm), ytest) >= 0.88)
+ok("avg set size > 0.5", omni_avg_set_size(omni_prediction_sets(ptest, q)) > 0.5)
+
 cat("\nomnikit smoke test complete.\n")

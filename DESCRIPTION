@@ -1,7 +1,7 @@
 Package: omnikit
 Type: Package
 Title: Multi-Omics Toolkit for Cross-Species, Spatial and Integrative Kidney Analysis
-Version: 0.1.0
+Version: 0.2.0
 Authors@R: person("Lingzhang", "Meng", email = "m.lingzhang@hotmail.com",
     role = c("aut", "cre"))
 Author: Lingzhang Meng [aut, cre]
